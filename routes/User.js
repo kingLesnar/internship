@@ -2,20 +2,20 @@ var express = require("express");
 const router = express.Router();
 
 const { check, validationResult } = require("express-validator");
-const { signup } = require("../controller/user");
+const { signup, signin } = require("../controller/user");
 
-// router.post(
-//   "/signin",
-//   [
-//     check("email", "email is required").isEmail(),
-//     check("password", "password field is required").isLength({ min: 1 }),
-//   ],
-//   signin,
-// );
+router.post(
+  "/signin",
+  [
+    check("email", "email is required").isEmail(),
+    check("password", "password field is required").isLength({ min: 1 }),
+  ],
+  signin,
+);
 
 // user
 router.post(
-  "/user/signup",
+  "/signup",
   [
     check("name", "name should be atleast 5 charater").isLength({ min: 5 }),
     check("email", "email is required").isEmail(),

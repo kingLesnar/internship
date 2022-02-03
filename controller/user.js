@@ -25,3 +25,40 @@ exports.signup = (req, res) => {
     });
   });
 };
+
+exports.signin = async (req, res) => {
+  const errors = validationResult(req);
+  const { email, password } = req.body;
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
+
+  User.findOne({ email }, async (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User doesn't exist",
+      });
+    }
+    // if (!user.authenticate(password)) {
+    if (user) {
+      // console.log(user);
+      const auth = await bcrypt.compare(req.body.password, user.password);
+      if (!auth) {
+        return res.status(401).json({
+          error: "Name or password is incorrect",
+        });
+      }
+    }
+    const { _id, name, email } = user;
+    return res.json({
+      user: {
+        _id,
+        name,
+        email,
+      },
+    });
+  });
+};
