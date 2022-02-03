@@ -42,11 +42,8 @@ exports.signin = async (req, res) => {
         error: "User doesn't exist",
       });
     }
-    // if (!user.authenticate(password)) {
     if (user) {
-      // console.log(user);
-      const auth = await bcrypt.compare(req.body.password, user.password);
-      if (!auth) {
+      if (!(req.body.password === user.password)) {
         return res.status(401).json({
           error: "Name or password is incorrect",
         });
