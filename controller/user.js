@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const { validationResult } = require("express-validator");
+const res = require("express/lib/response");
 
 exports.signup = (req, res) => {
   const errors = validationResult(req);
@@ -58,4 +59,34 @@ exports.signin = async (req, res) => {
       },
     });
   });
+};
+
+exports.getUser = (req, res) => {
+  User.findById({ _id: req.params.id }, (err, user) => {
+    if (err) {
+      return res.status(400).json({ message: "NO user Found" });
+    } else {
+      user.password = undefined;
+      return res.status(200).json({ message: "Sucess", user: user });
+    }
+  });
+};
+
+exports.mymiddileware = (req, res, next) => {
+  var flag = true;
+  console.log("here");
+  const charaters = " /@#$%^&";
+  const name = req.body.name;
+  for (let i = 0; i < name.length; i++) {
+    if (charaters.indexOf(name.charAt(i)) !== -1) {
+      falg = false;
+      return res.status(400).json({
+        message: `Your userName has special characters. ${charaters} These are not allowed.`,
+      });
+    }
+  }
+
+  if (flag == true) {
+    next();
+  }
 };
